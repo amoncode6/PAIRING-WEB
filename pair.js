@@ -4,6 +4,7 @@ const { exec } = require("child_process");
 let router = express.Router();
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
+
 const MESSAGE = process.env.MESSAGE || `
 *SESSION GENERATED SUCCESSFULLY* ✅
 
@@ -20,7 +21,6 @@ https://youtube.com/GlobalTechInfo
 *MEGA-AI--WHATSAPP* 🥀
 `;
 
-const uploadToPastebin = require('./Paste');  // Assuming you have a function to upload to Pastebin
 const {
     default: makeWASocket,
     useMultiFileAuthState,
@@ -67,31 +67,25 @@ router.get('/', async (req, res) => {
                 if (connection === "open") {
                     try {
                         await delay(10000);
-                        if (fs.existsSync('./auth_info_baileys/creds.json'));
+                        const credsFile = './auth_info_baileys/creds.json';
+                        if (!fs.existsSync(credsFile)) return;
 
-                        const auth_path = './auth_info_baileys/';
-                        let user = Smd.user.id;
+                        // Base64 encode session and add mrtechke_ prefix
+                        const rawCreds = fs.readFileSync(credsFile, 'utf-8');
+                        const base64 = Buffer.from(rawCreds).toString('base64');
+                        const sessionId = `mrtechke_${base64}`;
 
-                        // Upload the creds.json to Pastebin directly
-                        const credsFilePath = auth_path + 'creds.json';
-                        const pastebinUrl = await uploadToPastebin(credsFilePath, 'creds.json', 'json', '1');
+                        // Send session ID and message
+                        let msg = await Smd.sendMessage(Smd.user.id, { text: sessionId });
+                        await Smd.sendMessage(Smd.user.id, { text: MESSAGE }, { quoted: msg });
 
-                        const Scan_Id = pastebinUrl;  // Use the Pastebin URL as the session ID
-
-                        let msgsss = await Smd.sendMessage(user, { text: Scan_Id });
-                        await Smd.sendMessage(user, { text: MESSAGE }, { quoted: msgsss });
                         await delay(1000);
-                        try { await fs.emptyDirSync(__dirname + '/auth_info_baileys'); } catch (e) {}
-
+                        fs.emptyDirSync(__dirname + '/auth_info_baileys');
                     } catch (e) {
-                        console.log("Error during file upload or message send: ", e);
+                        console.log("Error during session send: ", e);
                     }
-
-                    await delay(100);
-                    await fs.emptyDirSync(__dirname + '/auth_info_baileys');
                 }
 
-                // Handle connection closures
                 if (connection === "close") {
                     let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
                     if (reason === DisconnectReason.connectionClosed) {
@@ -115,16 +109,15 @@ router.get('/', async (req, res) => {
         } catch (err) {
             console.log("Error in SUHAIL function: ", err);
             exec('pm2 restart qasim');
-            console.log("Service restarted due to error");
-            SUHAIL();
-            await fs.emptyDirSync(__dirname + '/auth_info_baileys');
+            await delay(2000);
             if (!res.headersSent) {
-                await res.send({ code: "Try After Few Minutes" });
+                res.send({ code: "Try Again Later" });
             }
+            fs.emptyDirSync(__dirname + '/auth_info_baileys');
         }
     }
 
-   return await SUHAIL();
+    return await SUHAIL();
 });
 
 module.exports = router;
