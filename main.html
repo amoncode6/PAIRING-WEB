@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MR TECH KE | Dashboard</title>
   <style>
     body {
       display: flex;
@@ -11,8 +12,8 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-      font-family: 'Roboto', 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #4e9f3d, #34d7b7, #55c7f7);
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #00b09b, #96c93d, #4facfe);
       background-size: 300% 300%;
       animation: gradientAnimation 10s ease infinite;
     }
@@ -25,35 +26,33 @@
 
     h1 {
       color: white;
-      font-size: 3.5rem;
-      margin-bottom: 40px;
+      font-size: 3rem;
+      margin-bottom: 30px;
       text-align: center;
-      letter-spacing: 3px;
       text-transform: uppercase;
-      font-weight: 700;
-      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      letter-spacing: 2px;
+      font-weight: bold;
+      text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
     }
 
     .btn {
       width: 250px;
       padding: 15px 25px;
-      margin: 10px;
+      margin: 12px;
       background: transparent;
-      border-radius: 25px;
-      border: 2px solid #ffffff;
-      font-size: 18px;
+      border-radius: 30px;
+      border: 2px solid #fff;
+      font-size: 17px;
       font-weight: bold;
-      text-transform: uppercase;
       color: white;
-      text-align: center;
+      cursor: pointer;
       position: relative;
       overflow: hidden;
-      cursor: pointer;
+      text-transform: uppercase;
       transition: all 0.4s ease;
-      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
     }
 
-    /* Add shine effect on hover */
     .btn::before {
       content: '';
       position: absolute;
@@ -61,7 +60,7 @@
       left: -50%;
       height: 200%;
       width: 200%;
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.2);
       transform: skewX(45deg);
       transition: all 0.5s;
     }
@@ -75,56 +74,35 @@
 
     .btn:hover {
       background-color: #ffffff;
-      color: #333;
-      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.5);
+      color: #222;
       transform: scale(1.05);
     }
 
     .btn:active {
-      filter: brightness(0.9);
-      transform: scale(0.98);
+      filter: brightness(0.95);
+      transform: scale(0.97);
     }
 
-    /* Responsive Design */
     @media (max-width: 600px) {
       h1 {
         font-size: 2.2rem;
       }
       .btn {
         width: 80%;
+        font-size: 15px;
         padding: 12px 20px;
-        font-size: 16px;
       }
     }
-
-    @media (min-width: 600px) and (max-width: 1024px) {
-      h1 {
-        font-size: 2.8rem;
-      }
-      .btn {
-        width: 220px;
-        padding: 14px 22px;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      h1 {
-        font-size: 3.5rem;
-      }
-      .btn {
-        width: 250px;
-        padding: 15px 25px;
-      }
-    }
-
   </style>
 </head>
 <body>
 
-  <button onclick="window.open(`/qr`)" class="btn">QR Code</button>
-  <button onclick="window.open(`/pair`)" class="btn">Pair Code</button>
-  <button onclick="window.open(`https://github.com/GlobalTechInfo`)" class="btn">GitHub</button>
-  <button onclick="window.open(`https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07`)" class="btn">WhatsApp</button>
+  <h1>MR TECH KE</h1>
+
+  <button onclick="window.open(`/qr`)" class="btn">QR Code Login</button>
+  <button onclick="window.open(`/pair`)" class="btn">Pair with Number</button>
+  <button onclick="window.open(`https://github.com/amoncode6/MR-TECH-`)" class="btn">GitHub Repo</button>
+  <button onclick="window.open(`https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07`)" class="btn">WhatsApp Channel</button>
 
 </body>
 </html>
