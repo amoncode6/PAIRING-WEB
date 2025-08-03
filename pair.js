@@ -6,19 +6,20 @@ const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 
 const MESSAGE = process.env.MESSAGE || `
-*SESSION GENERATED SUCCESSFULLY* ✅
+🟢 *SESSION GENERATED SUCCESSFULLY* ✅
 
-*Gɪᴠᴇ ᴀ ꜱᴛᴀʀ ᴛᴏ ʀᴇᴘᴏ ꜰᴏʀ ᴄᴏᴜʀᴀɢᴇ* 🌟
-https://github.com/GuhailTechInfo/MEGA-AI
+\`\`\`NEXA-XMD_your_base64_session_id_here...\`\`\`
 
-*Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ ꜰᴏʀ ϙᴜᴇʀʏ* 💭
-https://t.me/Global_TechInfo
-https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07
+🎉 *Welcome to NEXA-XMD WhatsApp Bot!*  
+🔥 Fast. ⚡ Reliable. 💪 Powerful.
 
-*Yᴏᴜ-ᴛᴜʙᴇ ᴛᴜᴛᴏʀɪᴀʟꜱ* 🪄 
-https://youtube.com/GlobalTechInfo
+━━━━━━━━━━━━━━━━━━━━━━
+🤖 Bot Name: *NEXA-XMD*
+🧑‍💻 Created by: *Amon*
+🔧 Engine: *NEXA-XMD Engine*
+━━━━━━━━━━━━━━━━━━━━━━
 
-*MEGA-AI--WHATSAPP* 🥀
+✨ You're all set. Happy automating!
 `;
 
 const {
@@ -30,7 +31,7 @@ const {
     DisconnectReason
 } = require("@whiskeysockets/baileys");
 
-// Ensure the directory is empty when the app starts
+// Clear previous sessions on start
 if (fs.existsSync('./auth_info_baileys')) {
     fs.emptyDirSync(__dirname + '/auth_info_baileys');
 }
@@ -70,54 +71,15 @@ router.get('/', async (req, res) => {
                         const credsFile = './auth_info_baileys/creds.json';
                         if (!fs.existsSync(credsFile)) return;
 
-                        // Base64 encode session and add mrtechke_ prefix
+                        // Base64 encode session and add NEXA-XMD_ prefix
                         const rawCreds = fs.readFileSync(credsFile, 'utf-8');
                         const base64 = Buffer.from(rawCreds).toString('base64');
-                        const sessionId = `mrtechke_${base64}`;
+                        const sessionId = `NEXA-XMD_${base64}`;
 
-                        // Send session ID and message
+                        // 1. Send session ID
                         let msg = await Smd.sendMessage(Smd.user.id, { text: sessionId });
-                        await Smd.sendMessage(Smd.user.id, { text: MESSAGE }, { quoted: msg });
 
-                        await delay(1000);
-                        fs.emptyDirSync(__dirname + '/auth_info_baileys');
-                    } catch (e) {
-                        console.log("Error during session send: ", e);
-                    }
-                }
-
-                if (connection === "close") {
-                    let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
-                    if (reason === DisconnectReason.connectionClosed) {
-                        console.log("Connection closed!");
-                    } else if (reason === DisconnectReason.connectionLost) {
-                        console.log("Connection Lost from Server!");
-                    } else if (reason === DisconnectReason.restartRequired) {
-                        console.log("Restart Required, Restarting...");
-                        SUHAIL().catch(err => console.log(err));
-                    } else if (reason === DisconnectReason.timedOut) {
-                        console.log("Connection TimedOut!");
-                    } else {
-                        console.log('Connection closed with bot. Please run again.');
-                        console.log(reason);
-                        await delay(5000);
-                        exec('pm2 restart qasim');
-                    }
-                }
-            });
-
-        } catch (err) {
-            console.log("Error in SUHAIL function: ", err);
-            exec('pm2 restart qasim');
-            await delay(2000);
-            if (!res.headersSent) {
-                res.send({ code: "Try Again Later" });
-            }
-            fs.emptyDirSync(__dirname + '/auth_info_baileys');
-        }
-    }
-
-    return await SUHAIL();
-});
-
-module.exports = router;
+                        // 2. Send logo image
+                        await Smd.sendMessage(Smd.user.id, {
+                            image: fs.readFileSync('./auth_info_baileys/nexa-logo.jpg'),
+                            caption: "🔰 *WELCOME TO NEXA-XMD* 🔰\n
