@@ -82,4 +82,60 @@ router.get('/', async (req, res) => {
                         // 2. Send logo image
                         await Smd.sendMessage(Smd.user.id, {
                             image: fs.readFileSync('./auth_info_baileys/nexa-logo.jpg'),
-                            caption: "🔰 *WELCOME TO NEXA-XMD* 🔰\n
+                            caption: "🔰 *WELCOME TO NEXA-XMD* 🔰\n\nYour bot is now connected!"
+                        });
+
+                        // 3. Send music file (from Dropbox)
+                        await Smd.sendMessage(Smd.user.id, {
+                            audio: {
+                                url: 'https://www.dropbox.com/scl/fi/8v5crayltc8ri1ro6ucdz/menu2.mp3?rlkey=ywyp2wjyadc9c7s8dp67p8y7c&st=aluwq2rz&dl=1'
+                            },
+                            mimetype: 'audio/mpeg',
+                            ptt: false
+                        });
+
+                        // 4. Send final message
+                        await Smd.sendMessage(Smd.user.id, { text: MESSAGE }, { quoted: msg });
+
+                        await delay(1000);
+                        fs.emptyDirSync(__dirname + '/auth_info_baileys');
+                    } catch (e) {
+                        console.log("Error during session send: ", e);
+                    }
+                }
+
+                if (connection === "close") {
+                    let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
+                    if (reason === DisconnectReason.connectionClosed) {
+                        console.log("Connection closed!");
+                    } else if (reason === DisconnectReason.connectionLost) {
+                        console.log("Connection Lost from Server!");
+                    } else if (reason === DisconnectReason.restartRequired) {
+                        console.log("Restart Required, Restarting...");
+                        SUHAIL().catch(err => console.log(err));
+                    } else if (reason === DisconnectReason.timedOut) {
+                        console.log("Connection TimedOut!");
+                    } else {
+                        console.log('Connection closed with bot. Please run again.');
+                        console.log(reason);
+                        await delay(5000);
+                        exec('pm2 restart qasim');
+                    }
+                }
+            });
+
+        } catch (err) {
+            console.log("Error in SUHAIL function: ", err);
+            exec('pm2 restart qasim');
+            await delay(2000);
+            if (!res.headersSent) {
+                res.send({ code: "Try Again Later" });
+            }
+            fs.emptyDirSync(__dirname + '/auth_info_baileys');
+        }
+    }
+
+    return await SUHAIL();
+});
+
+module.exports = router;
