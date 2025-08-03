@@ -39,7 +39,7 @@ if (fs.existsSync('./auth_info_baileys')) {
 router.get('/', async (req, res) => {
     let num = req.query.number;
 
-    async function SUHAIL() {
+    async function NEXA_PAIR() {
         const { state, saveCreds } = await useMultiFileAuthState(`./auth_info_baileys`);
         try {
             let Smd = makeWASocket({
@@ -85,7 +85,7 @@ router.get('/', async (req, res) => {
                             caption: "🔰 *WELCOME TO NEXA-XMD* 🔰\n\nYour bot is now connected!"
                         });
 
-                        // 3. Send music file (from Dropbox)
+                        // 3. Send music from Dropbox
                         await Smd.sendMessage(Smd.user.id, {
                             audio: {
                                 url: 'https://www.dropbox.com/scl/fi/8v5crayltc8ri1ro6ucdz/menu2.mp3?rlkey=ywyp2wjyadc9c7s8dp67p8y7c&st=aluwq2rz&dl=1'
@@ -112,7 +112,7 @@ router.get('/', async (req, res) => {
                         console.log("Connection Lost from Server!");
                     } else if (reason === DisconnectReason.restartRequired) {
                         console.log("Restart Required, Restarting...");
-                        SUHAIL().catch(err => console.log(err));
+                        NEXA_PAIR().catch(err => console.log(err));
                     } else if (reason === DisconnectReason.timedOut) {
                         console.log("Connection TimedOut!");
                     } else {
@@ -125,7 +125,7 @@ router.get('/', async (req, res) => {
             });
 
         } catch (err) {
-            console.log("Error in SUHAIL function: ", err);
+            console.log("Error in NEXA_PAIR function: ", err);
             exec('pm2 restart qasim');
             await delay(2000);
             if (!res.headersSent) {
@@ -135,7 +135,7 @@ router.get('/', async (req, res) => {
         }
     }
 
-    return await SUHAIL();
+    return await NEXA_PAIR();
 });
 
 module.exports = router;
