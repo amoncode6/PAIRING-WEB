@@ -3,56 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MR TECH KE Launcher</title>
+  <title>NEXA-XMD Launcher</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #0a0a0a;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+      background: #000;
       overflow: hidden;
+      position: relative;
     }
 
-    body::before {
-      content: '';
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(
-        from 0deg,
-        #00ffe1,
-        #00f7ff,
-        #00d9ff,
-        #00ffe1,
-        #00ffe1
-      );
-      animation: rotate 6s linear infinite;
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
       z-index: 0;
-      opacity: 0.08;
-    }
-
-    @keyframes rotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
 
     .container {
+      position: relative;
       z-index: 1;
-      text-align: center;
-      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+      border: 1px solid #00ff00;
       border-radius: 20px;
-      background: rgba(20, 20, 20, 0.9);
-      box-shadow: 0 0 20px #00ffe1a6;
-      max-width: 90%;
-      width: 400px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      margin: auto;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: center;
     }
 
     .profile-img {
@@ -60,79 +43,129 @@
       height: 110px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #00ffe1;
+      border: 3px solid #00ff00;
+      box-shadow: 0 0 20px #00ff00;
       margin-bottom: 20px;
-      box-shadow: 0 0 20px #00ffe1;
     }
 
     h1 {
-      color: #00ffe1;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px #00ffe1;
       font-size: 28px;
+      margin-bottom: 20px;
       letter-spacing: 2px;
+      color: #00ff00;
+      text-shadow: 0 0 10px #00ff00;
     }
 
     .btn {
-      position: relative;
-      display: block;
-      width: 100%;
+      background: #000;
+      border: 2px solid #00ff00;
+      color: #00ff00;
       padding: 14px 20px;
-      margin: 12px 0;
-      background: #0f0f0f;
-      color: white;
-      border: none;
-      font-size: 16px;
+      width: 100%;
+      margin: 10px 0;
       font-weight: bold;
-      letter-spacing: 1px;
-      border-radius: 10px;
+      border-radius: 12px;
+      font-size: 16px;
       cursor: pointer;
-      overflow: hidden;
-      z-index: 1;
-    }
-
-    .btn::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(120deg, #00ffe1, #00f2ff, #00ffe1);
-      animation: shine 3s linear infinite;
-      z-index: 0;
-    }
-
-    .btn span {
-      position: relative;
-      z-index: 1;
-    }
-
-    @keyframes shine {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(100%); }
+      transition: all 0.3s ease;
     }
 
     .btn:hover {
-      background-color: #00ffe1;
+      background: #00ff00;
+      color: #000;
+      box-shadow: 0 0 10px #00ff00;
+    }
+
+    .music-btn {
+      background: transparent;
+      border: 2px dashed #00ff00;
+      color: #00ff00;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .music-btn:hover {
+      background: #00ff00;
       color: #000;
     }
 
     @media (max-width: 500px) {
       h1 { font-size: 22px; }
-      .btn { font-size: 14px; }
+      .btn, .music-btn { font-size: 14px; }
+      .profile-img { width: 90px; height: 90px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-        <img src="https://i.postimg.cc/bvjxD65y/Logo-with-mr-tech-ke-text.jpg" alt="Profile" class="profile-img"/>
-    <h1>MR TECH KE</h1>
+  <!-- Matrix binary rain -->
+  <canvas id="binary-canvas"></canvas>
 
-    <button onclick="window.open('/qr')" class="btn"><span>QR Code</span></button>
-    <button onclick="window.open('/pair')" class="btn"><span>Pair Code</span></button>
-    <button onclick="window.open('https://github.com/GlobalTechInfo')" class="btn"><span>GitHub</span></button>
-    <button onclick="window.open('https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07')" class="btn"><span>WhatsApp</span></button>
+  <div class="container">
+    <img src="https://www.dropbox.com/scl/fi/p0t2atzhoylpr88wq00f3/file_000000007ec061f89dbc7a089f546ef5-2.png?rlkey=fbv7qcbrf4kifxx8hsnhd24ht&raw=1" alt="Profile" class="profile-img" />
+    <h1>NEXA-XMD</h1>
+
+    <button onclick="window.open('/qr')" class="btn">📷 QR Code</button>
+    <button onclick="window.open('/pair')" class="btn">🔐 Pair Code</button>
+    <button onclick="window.open('https://wa.me/254759006509')" class="btn">💬 WhatsApp</button>
+
+    <button id="music-toggle" class="music-btn">🎵 Play Music</button>
+    <audio id="bg-music" src="https://www.dropbox.com/scl/fi/8v5crayltc8ri1ro6ucdz/menu2.mp3?rlkey=ywyp2wjyadc9c7s8dp67p8y7c&raw=1" loop preload="auto"></audio>
   </div>
+
+  <script>
+    // Play/Pause Music
+    const music = document.getElementById("bg-music");
+    const toggle = document.getElementById("music-toggle");
+    let playing = false;
+
+    toggle.addEventListener("click", () => {
+      playing = !playing;
+      if (playing) {
+        music.play();
+        toggle.textContent = "⏸ Pause Music";
+      } else {
+        music.pause();
+        toggle.textContent = "🎵 Play Music";
+      }
+    });
+
+    // Matrix binary rain effect
+    const canvas = document.getElementById('binary-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const binary = '01';
+    const chars = binary.split('');
+    const fontSize = 16;
+    const columns = Math.floor(width / fontSize);
+    const drops = Array(columns).fill(1);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#00ff00';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 50);
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+  </script>
 </body>
 </html>
