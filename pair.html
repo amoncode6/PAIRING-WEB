@@ -3,48 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pair with MR TECH KE</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <title>NEXA-XMD Pair Code</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #0f0f0f;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       color: white;
     }
 
     .container {
-      background: #181818;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 0 30px #00ffcc, 0 0 10px #006666;
+      background: rgba(24, 24, 24, 0.95);
+      border-radius: 18px;
+      padding: 35px 30px;
+      box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
       text-align: center;
-      max-width: 400px;
-      width: 90%;
-      animation: neon-glow 2s infinite alternate;
+      max-width: 420px;
+      width: 92%;
+      backdrop-filter: blur(5px);
     }
 
-    @keyframes neon-glow {
-      from {
-        box-shadow: 0 0 10px #00ffcc;
-      }
-      to {
-        box-shadow: 0 0 30px #00ffcc, 0 0 20px #006666;
-      }
+    .logo {
+      width: 110px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #00ffee;
     }
 
     h2 {
       margin-bottom: 10px;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       color: #00ffee;
+      font-family: 'Orbitron', sans-serif;
     }
 
     p {
@@ -55,30 +54,30 @@
 
     .input-container {
       display: flex;
+      flex-direction: column;
       gap: 10px;
       margin-bottom: 20px;
     }
 
     input[type="number"] {
-      flex: 1;
       padding: 12px;
       border: none;
       border-radius: 10px;
       font-size: 16px;
       background-color: #1f1f1f;
       color: #fff;
-      box-shadow: inset 0 0 5px #00ffaa;
+      box-shadow: inset 0 0 6px #00ffaa;
     }
 
     button {
       padding: 12px 16px;
-      background: linear-gradient(135deg, #00ffee, #0066ff);
+      background: linear-gradient(135deg, #00ffee, #0077ff);
       border: none;
       color: white;
       border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: 0.3s ease;
     }
 
     button:hover {
@@ -101,12 +100,8 @@
     }
 
     @keyframes pulse {
-      0% {
-        box-shadow: 0 0 5px #00ffee;
-      }
-      100% {
-        box-shadow: 0 0 20px #00ffee;
-      }
+      0% { box-shadow: 0 0 5px #00ffee; }
+      100% { box-shadow: 0 0 20px #00ffee; }
     }
 
     #code-value {
@@ -131,24 +126,40 @@
       background: #00ccaa;
     }
 
-    audio {
-      display: none;
+    .audio-controls {
+      margin-top: 20px;
+    }
+
+    footer {
+      font-size: 12px;
+      margin-top: 15px;
+      color: #888;
     }
   </style>
 </head>
 <body>
+  <img src="https://www.dropbox.com/scl/fi/p0t2atzhoylpr88wq00f3/file_000000007ec061f89dbc7a089f546ef5-2.png?rlkey=fbv7qcbrf4kifxx8hsnhd24ht&raw=1" alt="NEXA Logo" class="logo" />
+
   <div class="container">
-    <h2>MR TECH KE PAIRING</h2>
+    <h2>NEXA-XMD PAIR CODE</h2>
     <p>Enter your WhatsApp number with country code</p>
+
     <div class="input-container">
       <input id="number" type="number" placeholder="e.g. 254712345678" />
       <button id="submit">Get Code</button>
     </div>
+
     <div id="status"></div>
     <div id="pair"></div>
 
-    <!-- Sound when code is ready -->
-    <audio id="success-sound" src="https://notificationsounds.com/storage/sounds/file-sounds-1156-eventually.mp3" preload="auto"></audio>
+    <div class="audio-controls">
+      <button onclick="toggleAudio()" id="audio-toggle">🎵 Play Music</button>
+      <audio id="bg-music" loop>
+        <source src="https://www.dropbox.com/scl/fi/8v5crayltc8ri1ro6ucdz/menu2.mp3?rlkey=ywyp2wjyadc9c7s8dp67p8y7c&raw=1" type="audio/mpeg" />
+      </audio>
+    </div>
+
+    <footer>⚙️ Powered by Amon</footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -157,7 +168,6 @@
     const numberInput = document.getElementById("number");
     const status = document.getElementById("status");
     const pair = document.getElementById("pair");
-    const sound = document.getElementById("success-sound");
 
     submit.addEventListener("click", async () => {
       const number = numberInput.value.trim();
@@ -182,10 +192,8 @@
             <button id="copy-btn">Copy</button>
           </div>
         `;
-        status.innerText = "✅ Pairing code generated!";
-        sound.play();
+        status.innerText = "✅ Code ready! Sent to your WhatsApp.";
 
-        // Copy functionality
         document.getElementById("copy-btn").onclick = async () => {
           await navigator.clipboard.writeText(code);
           const btn = document.getElementById("copy-btn");
@@ -194,9 +202,21 @@
         };
 
       } catch (e) {
-        status.innerText = "❌ Failed to fetch pairing code.";
+        status.innerText = "❌ Failed to fetch code.";
       }
     });
+
+    function toggleAudio() {
+      const audio = document.getElementById("bg-music");
+      const toggleBtn = document.getElementById("audio-toggle");
+      if (audio.paused) {
+        audio.play();
+        toggleBtn.innerText = "⏸ Pause Music";
+      } else {
+        audio.pause();
+        toggleBtn.innerText = "🎵 Play Music";
+      }
+    }
   </script>
 </body>
 </html>
