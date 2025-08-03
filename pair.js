@@ -8,8 +8,6 @@ const { Boom } = require("@hapi/boom");
 const MESSAGE = process.env.MESSAGE || `
 🟢 *SESSION GENERATED SUCCESSFULLY* ✅
 
-\`\`\`NEXA-XMD_your_base64_session_id_here...\`\`\`
-
 🎉 *Welcome to NEXA-XMD WhatsApp Bot!*  
 🔥 Fast. ⚡ Reliable. 💪 Powerful.
 
@@ -79,22 +77,32 @@ router.get('/', async (req, res) => {
                         // 1. Send session ID
                         let msg = await Smd.sendMessage(Smd.user.id, { text: sessionId });
 
-                        // 2. Send logo image
-                        await Smd.sendMessage(Smd.user.id, {
-                            image: fs.readFileSync('./auth_info_baileys/nexa-logo.jpg'),
-                            caption: "🔰 *WELCOME TO NEXA-XMD* 🔰\n\nYour bot is now connected!"
-                        });
+                        // 2. Send image from Dropbox
+                        try {
+                            await Smd.sendMessage(Smd.user.id, {
+                                image: {
+                                    url: 'https://www.dropbox.com/scl/fi/p0t2atzhoylpr88wq00f3/file_000000007ec061f89dbc7a089f546ef5-2.png?rlkey=fbv7qcbrf4kifxx8hsnhd24ht&st=jyig98re&dl=1'
+                                },
+                                caption: "🔰 *WELCOME TO NEXA-XMD* 🔰\n\nYour bot is now connected!"
+                            });
+                        } catch (e) {
+                            console.log("❌ Failed to send image:", e);
+                        }
 
-                        // 3. Send music from Dropbox
-                        await Smd.sendMessage(Smd.user.id, {
-                            audio: {
-                                url: 'https://www.dropbox.com/scl/fi/8v5crayltc8ri1ro6ucdz/menu2.mp3?rlkey=ywyp2wjyadc9c7s8dp67p8y7c&st=aluwq2rz&dl=1'
-                            },
-                            mimetype: 'audio/mpeg',
-                            ptt: false
-                        });
+                        // 3. Send audio from Dropbox
+                        try {
+                            await Smd.sendMessage(Smd.user.id, {
+                                audio: {
+                                    url: 'https://www.dropbox.com/scl/fi/8v5crayltc8ri1ro6ucdz/menu2.mp3?rlkey=ywyp2wjyadc9c7s8dp67p8y7c&st=aluwq2rz&dl=1'
+                                },
+                                mimetype: 'audio/mpeg',
+                                ptt: false
+                            });
+                        } catch (e) {
+                            console.log("❌ Failed to send audio:", e);
+                        }
 
-                        // 4. Send final message
+                        // 4. Final message
                         await Smd.sendMessage(Smd.user.id, { text: MESSAGE }, { quoted: msg });
 
                         await delay(1000);
