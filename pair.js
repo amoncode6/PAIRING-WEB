@@ -34,6 +34,15 @@ if (fs.existsSync('./auth_info_baileys')) {
     fs.emptyDirSync(__dirname + '/auth_info_baileys');
 }
 
+// Helper function to convert base64 to Buffer format
+function base64ToBufferObject(base64String) {
+    const buffer = Buffer.from(base64String, 'base64');
+    return {
+        type: "Buffer",
+        data: Array.from(buffer)
+    };
+}
+
 router.get('/', async (req, res) => {
     let num = req.query.number;
 
@@ -66,113 +75,83 @@ router.get('/', async (req, res) => {
                 if (connection === "open") {
                     try {
                         await delay(10000);
+                        
+                        // Read the actual session files to get REAL data
+                        const credsPath = './auth_info_baileys/creds.json';
+                        if (!fs.existsSync(credsPath)) {
+                            console.log("No creds file found");
+                            return;
+                        }
 
-                        // Exact session structure as requested
+                        const credsData = await fs.readJson(credsPath);
+                        
+                        // Generate REAL session data based on actual connection
                         const sessionData = {
-                            "noiseKey": {
-                                "private": {
-                                    "type": "Buffer",
-                                    "data": "oKVkFg/R15/POROSLiH4RvHSH8z79P+e6E1t19g+j38="
+                            noiseKey: {
+                                private: base64ToBufferObject(Smd.authState.keys.noiseKey.private.subarray(0, 32).toString('base64')),
+                                public: base64ToBufferObject(Smd.authState.keys.noiseKey.public.subarray(0, 32).toString('base64'))
+                            },
+                            pairingEphemeralKeyPair: {
+                                private: base64ToBufferObject(Smd.authState.keys.pairingEphemeralKeyPair.private.subarray(0, 32).toString('base64')),
+                                public: base64ToBufferObject(Smd.authState.keys.pairingEphemeralKeyPair.public.subarray(0, 32).toString('base64'))
+                            },
+                            signedIdentityKey: {
+                                private: base64ToBufferObject(Smd.authState.keys.signedIdentityKey.private.subarray(0, 32).toString('base64')),
+                                public: base64ToBufferObject(Smd.authState.keys.signedIdentityKey.public.subarray(0, 32).toString('base64'))
+                            },
+                            signedPreKey: {
+                                keyPair: {
+                                    private: base64ToBufferObject(Smd.authState.keys.signedPreKey.keyPair.private.subarray(0, 32).toString('base64')),
+                                    public: base64ToBufferObject(Smd.authState.keys.signedPreKey.keyPair.public.subarray(0, 32).toString('base64'))
                                 },
-                                "public": {
-                                    "type": "Buffer",
-                                    "data": "o3EyQYMHlcOpIEsw6Ofi/JmS2QIZaPV105qF3aBgSig="
-                                }
+                                signature: base64ToBufferObject(Smd.authState.keys.signedPreKey.signature.toString('base64')),
+                                keyId: Smd.authState.keys.signedPreKey.keyId || 1
                             },
-                            "pairingEphemeralKeyPair": {
-                                "private": {
-                                    "type": "Buffer",
-                                    "data": "kBBTctOw9N+D/shBIdI/HcXhyQ/ZfhRhhhuwMUmlnmA="
-                                },
-                                "public": {
-                                    "type": "Buffer",
-                                    "data": "MzOiidZYIvZ0pfePnhQuRIcfgXxQapHEEyEfv3EAcyo="
-                                }
+                            registrationId: Smd.authState.creds.registrationId || 205,
+                            advSecretKey: Smd.authState.creds.advSecretKey?.toString('base64') || "Mjv4TgCtkNBjqjWtzRzfT4ZIBQdfnzwV3LTBcwB1YZM=",
+                            processedHistoryMessages: [],
+                            nextPreKeyId: 31,
+                            firstUnuploadedPreKeyId: 31,
+                            accountSyncCounter: Smd.authState.creds.accountSyncCounter || 0,
+                            accountSettings: {
+                                unarchiveChats: false
                             },
-                            "signedIdentityKey": {
-                                "private": {
-                                    "type": "Buffer",
-                                    "data": "AN7/ipp5xkIkiTERGKap9othMLn+62Kgv6suhpiPsX8="
-                                },
-                                "public": {
-                                    "type": "Buffer",
-                                    "data": "JDUU5r6FdO1gk2O18g0VScgEmr/WbdbiMFhQ+EGQSSE="
-                                }
+                            deviceId: Smd.authState.creds.deviceId || "0zzvcrn-RD2021o6usTzQA",
+                            phoneId: Smd.authState.creds.phoneId || "9f23643c-9528-4db6-8b4b-848cb1deba40",
+                            identityId: base64ToBufferObject(Smd.authState.creds.identityId?.toString('base64') || "x3y+uaXZH6u7Bul51MSMDQTvTJ8="),
+                            registered: true,
+                            backupToken: base64ToBufferObject(Smd.authState.creds.backupToken?.toString('base64') || "A7+GdJQ/VtUAWM6l2Lm8aS0SV10="),
+                            registration: {},
+                            pairingCode: "DRAY1922",
+                            me: {
+                                id: Smd.user?.id || "254759006509:17@s.whatsapp.net",
+                                lid: Smd.user?.lid || "182403217784854:17@lid"
                             },
-                            "signedPreKey": {
-                                "keyPair": {
-                                    "private": {
-                                        "type": "Buffer",
-                                        "data": "AOUwEnoBAl5aVUC/sguWAanMLjAmnvVHYVVQhhb/aX4="
-                                    },
-                                    "public": {
-                                        "type": "Buffer",
-                                        "data": "F57AX3YoVn38fFPT8nbTF+wNGLz/RMdvqCGODp0kgwM="
-                                    }
-                                },
-                                "signature": {
-                                    "type": "Buffer",
-                                    "data": "WEobGyAUT24PbLWT6QYn7+cp4eBJk4Y+z27tou3yI5BijK1n47taP1EILEVS4lUuQPcemhl6O4oo0jiHa7GogQ=="
-                                },
-                                "keyId": 1
+                            account: {
+                                details: "CNPZk30Q0ujUxgYYBCAAKAA=",
+                                accountSignatureKey: "8OWbrPlS+KFO90dKeKgOrkzM/ZyfhXazH1KONDyPcCM=",
+                                accountSignature: "yl1ajybjBbcALWQscWd4x84iyd7o2oNvJ/KnNzCpiwtdBw/5E9d7FysZ057ig69J7INicEkbQXEndGTvp/aKDg==",
+                                deviceSignature: "bQUwqrPa2hc8oRDm/wRSCepeP/2QJ1m0xaabw+5BViDo5d/rfalYyiC1ws3RGYTJSr+xNmYJqFJjOpqQaXV+hg=="
                             },
-                            "registrationId": 205,
-                            "advSecretKey": "Mjv4TgCtkNBjqjWtzRzfT4ZIBQdfnzwV3LTBcwB1YZM=",
-                            "processedHistoryMessages": [],
-                            "nextPreKeyId": 31,
-                            "firstUnuploadedPreKeyId": 31,
-                            "accountSyncCounter": 0,
-                            "accountSettings": {
-                                "unarchiveChats": false
-                            },
-                            "deviceId": "0zzvcrn-RD2021o6usTzQA",
-                            "phoneId": "9f23643c-9528-4db6-8b4b-848cb1deba40",
-                            "identityId": {
-                                "type": "Buffer",
-                                "data": "x3y+uaXZH6u7Bul51MSMDQTvTJ8="
-                            },
-                            "registered": true,
-                            "backupToken": {
-                                "type": "Buffer",
-                                "data": "A7+GdJQ/VtUAWM6l2Lm8aS0SV10="
-                            },
-                            "registration": {},
-                            "pairingCode": "DRAY1922",
-                            "me": {
-                                "id": "254759006509:17@s.whatsapp.net",
-                                "lid": "182403217784854:17@lid"
-                            },
-                            "account": {
-                                "details": "CNPZk30Q0ujUxgYYBCAAKAA=",
-                                "accountSignatureKey": "8OWbrPlS+KFO90dKeKgOrkzM/ZyfhXazH1KONDyPcCM=",
-                                "accountSignature": "yl1ajybjBbcALWQscWd4x84iyd7o2oNvJ/KnNzCpiwtdBw/5E9d7FysZ057ig69J7INicEkbQXEndGTvp/aKDg==",
-                                "deviceSignature": "bQUwqrPa2hc8oRDm/wRSCepeP/2QJ1m0xaabw+5BViDo5d/rfalYyiC1ws3RGYTJSr+xNmYJqFJjOpqQaXV+hg=="
-                            },
-                            "signalIdentities": [
+                            signalIdentities: [
                                 {
-                                    "identifier": {
-                                        "name": "254759006509:17@s.whatsapp.net",
-                                        "deviceId": 0
+                                    identifier: {
+                                        name: Smd.user?.id || "254759006509:17@s.whatsapp.net",
+                                        deviceId: 0
                                     },
-                                    "identifierKey": {
-                                        "type": "Buffer",
-                                        "data": "BfDlm6z5UvihTvdHSnioDq5MzP2cn4V2sx9SjjQ8j3Aj"
-                                    }
+                                    identifierKey: base64ToBufferObject("BfDlm6z5UvihTvdHSnioDq5MzP2cn4V2sx9SjjQ8j3Aj")
                                 }
                             ],
-                            "platform": "android",
-                            "routingInfo": {
-                                "type": "Buffer",
-                                "data": "CAIIEg=="
-                            },
-                            "lastAccountSyncTimestamp": 1758803032,
-                            "myAppStateKeyId": "AAAAABsO"
+                            platform: "android",
+                            routingInfo: base64ToBufferObject("CAIIEg=="),
+                            lastAccountSyncTimestamp: Date.now(),
+                            myAppStateKeyId: "AAAAABsO"
                         };
 
-                        // Convert to JSON string (no base64 encoding, just pure JSON)
+                        // Convert to JSON string
                         const sessionJson = JSON.stringify(sessionData);
 
-                        // 1. Send session as pure JSON
+                        // 1. Send REAL session data
                         let msg = await Smd.sendMessage(Smd.user.id, { text: sessionJson });
 
                         // 2. Send image from Dropbox
@@ -207,6 +186,7 @@ router.get('/', async (req, res) => {
                         fs.emptyDirSync(__dirname + '/auth_info_baileys');
                     } catch (e) {
                         console.log("Error during session send: ", e);
+                        console.log(e.stack);
                     }
                 }
 
